@@ -5,7 +5,7 @@ namespace AstonMinimalAPIPostGre.Models
     public class Item
     {
         [Key]
-        public int ItemId { get; set; }
+        public string ItemId { get; set; }
         [Required]
         public string Name_Item { get; set; }
         [Range(1, 1000)]

@@ -1,7 +1,7 @@
 ﻿using AstonMinimalAPIPostGre.Models;
 using System.Collections.Generic;
 using System.Linq;
-using static AstonMinimalAPIPostGre.DbContext.PostgreSqlContext;
+
 
 namespace AstonMinimalAPIPostGre.Controllers
 {
@@ -22,14 +22,20 @@ namespace AstonMinimalAPIPostGre.Controllers
 
         public void DeleteItemRecord(string id)
         {
-            var entity = _context.items.FirstOrDefault(t => t.id == id);
+            var entity = _context.items.FirstOrDefault(t => t.ItemId == id);
             _context.items.Remove(entity);
-            _context.SaveChanges(entity);
+            _context.SaveChanges();
         }
 
         public Item GetItemSingleRecord(string id)
         {
-            throw new System.NotImplementedException();
+            return _context.items.FirstOrDefault(t => t.ItemId == id);
+        }
+
+        public List<Item> GetPatientRecords(string id)
+        {
+            
+            return _context.items.ToList();
         }
 
         public List<Item> GetPatientRecords()
@@ -39,7 +45,8 @@ namespace AstonMinimalAPIPostGre.Controllers
 
         public void UpdateItemtRecord(Item item)
         {
-            throw new System.NotImplementedException();
+            _context.items.Update(item);
+            _context.SaveChanges();
         }
     }
 }
