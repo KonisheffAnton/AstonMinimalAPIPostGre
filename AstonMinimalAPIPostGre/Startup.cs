@@ -10,6 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
 
 namespace AstonMinimalAPIPostGre
 {
@@ -29,11 +32,14 @@ namespace AstonMinimalAPIPostGre
             services.AddDbContext<MyApplicationDbContext>(options =>
            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IDataAccessProvider, DataAccessProvider>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,6 +53,9 @@ namespace AstonMinimalAPIPostGre
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseRouting();
 
             app.UseAuthorization();
