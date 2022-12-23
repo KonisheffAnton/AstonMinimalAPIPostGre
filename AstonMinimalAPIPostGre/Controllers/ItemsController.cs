@@ -16,13 +16,13 @@ namespace AstonMinimalAPIPostGre.Controllers
         }
 
         [HttpGet]  
-        public IEnumerable<Item> Get()
+        public IEnumerable<Person> Get()
         {
             return _dataAccessProvider.GetPatientRecords();
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Item item)
+        public IActionResult Create([FromBody] Person item)
         {
             if (ModelState.IsValid)
             {
@@ -35,13 +35,13 @@ namespace AstonMinimalAPIPostGre.Controllers
         }
 
         [HttpGet("{id}")]
-        public Item Details(string id)
+        public Person Details(string id)
         {
             return _dataAccessProvider.GetItemSingleRecord(id);
         }
 
         [HttpPut]
-        public IActionResult Edit([FromBody] Item item)
+        public IActionResult Edit([FromBody] Person item)
         {
             if (ModelState.IsValid)
             {

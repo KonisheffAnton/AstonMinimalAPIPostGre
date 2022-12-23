@@ -13,7 +13,9 @@ namespace AstonMinimalAPIPostGre
         {
 
         }
-        public DbSet<Item> items { get; set; }
+        public DbSet<Film> DbSetOfFilms { get; set; }
+        public DbSet<Vehicle> DbSetOfVehicles { get; set; }
+        public DbSet<Person> DbSetOfPersons { get; set; }
 
     }
 }

@@ -6,10 +6,10 @@ namespace AstonMinimalAPIPostGre.Controllers
 {
     public interface IDataAccessProvider
     {
-        void AddItemRecord(Item item);
-        void UpdateItemtRecord(Item item);
+        void AddItemRecord(Person item);
+        void UpdateItemtRecord(Person item);
         void DeleteItemRecord(string id);
-        Item GetItemSingleRecord(string id);
-        List<Item> GetPatientRecords();
+        Person GetItemSingleRecord(string id);
+        List<Person> GetPatientRecords();
     }
 }

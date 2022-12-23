@@ -14,7 +14,7 @@ namespace AstonMinimalAPIPostGre.Controllers
             _context = context;
         }
 
-        public void AddItemRecord(Item item)
+        public void AddItemRecord(Person item)
         {
             _context.items.Add(item);
             _context.SaveChanges();
@@ -27,23 +27,23 @@ namespace AstonMinimalAPIPostGre.Controllers
             _context.SaveChanges();
         }
 
-        public Item GetItemSingleRecord(string id)
+        public Person GetItemSingleRecord(string id)
         {
             return _context.items.FirstOrDefault(t => t.ItemId == id);
         }
 
-        public List<Item> GetPatientRecords(string id)
+        public List<Person> GetPatientRecords(string id)
         {
             
             return _context.items.ToList();
         }
 
-        public List<Item> GetPatientRecords()
+        public List<Person> GetPatientRecords()
         {
             throw new System.NotImplementedException();
         }
 
-        public void UpdateItemtRecord(Item item)
+        public void UpdateItemtRecord(Person item)
         {
             _context.items.Update(item);
             _context.SaveChanges();
