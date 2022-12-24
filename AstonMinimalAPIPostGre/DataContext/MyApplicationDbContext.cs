@@ -16,7 +16,12 @@ namespace AstonMinimalAPIPostGre
         public DbSet<Film> DbSetOfFilms { get; set; }
         public DbSet<Vehicle> DbSetOfVehicles { get; set; }
         public DbSet<Person> DbSetOfPersons { get; set; }
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Film>().ToTable("Film");
+            modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
+            modelBuilder.Entity<Person>().ToTable("Person");
+        }
     }
 }
 

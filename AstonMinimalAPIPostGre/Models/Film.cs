@@ -6,7 +6,7 @@ namespace AstonMinimalAPIPostGre.Models
     public class Film
     {
         [Key]
-        public string FilmId { get; set; }
+        public int FilmId { get; set; }
         public string Name { get; set; }
         public  ICollection<Person> Person { get; set; }
         public  ICollection<Vehicle> Vehicles { get; set; }

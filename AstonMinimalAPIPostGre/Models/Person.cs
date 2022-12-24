@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,7 +8,7 @@ namespace AstonMinimalAPIPostGre.Models
     public class Person
     {
         [Key]
-        public string ItemId { get; set; }
+        public int ItemId { get; set; }
         public string Name { get; set; }
         public string Homeworld { get; set; }
         public ICollection<Film> Films { get; set; }
