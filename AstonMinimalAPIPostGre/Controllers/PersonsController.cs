@@ -1,7 +1,8 @@
-﻿using AstonMinimalAPIPostGre.Models;
-using Microsoft.AspNetCore.Http;
+﻿using AstonMinimalAPIPostGre.Dtos;
+using AstonMinimalAPIPostGre.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,10 +21,20 @@ namespace AstonMinimalAPIPostGre.Controllers
 
 
         [HttpGet("{personId}")]
-        public async Task<ActionResult<Person>> GetPersonById([FromRoute] int personId)
+        public async Task<ActionResult<PersonDto>> GetPersonById([FromRoute] int personId)
         {
-            var person = await _context.DbSetOfPersons.AsQueryable().Where(c => c.ItemId == personId).Include(c=>c.vehicle).FirstOrDefaultAsync();
-            
+            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).Select(personItem =>
+                new PersonDto()
+                {
+                    ItemId = personItem.ItemId,
+                    Name = personItem.Name,
+                    Homeworld = personItem.Homeworld,
+                    FilmNameWithPerson = personItem.Films.Select(film => film.Name).ToList(),
+                    vehicle = personItem.vehicle.Name
+                }).SingleOrDefaultAsync(c => c.ItemId == personId);
+
+            //select * from persons inner join  Vehicle on person.vehicleid = vehicleid inner join on person where pesonId = personId 
+
             if (person != null)
             {
                 return person;
@@ -34,11 +45,31 @@ namespace AstonMinimalAPIPostGre.Controllers
             }
 
         }
-        //[HttpGet]
-        //public Task GetPersonList()
-        //{
+        [HttpGet]
+        public async Task<ActionResult<ICollection<PersonDto>>> GetPersonList()
+        {
+            var personList = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).Select(personItem =>
+                new PersonDto()
+                {
+                    ItemId = personItem.ItemId,
+                    Name = personItem.Name,
+                    Homeworld = personItem.Homeworld,
+                    FilmNameWithPerson = personItem.Films.Select(film => film.Name).ToList(),
+                    vehicle = personItem.vehicle.Name
+                }).ToListAsync();
 
-        //}
+            //select * from persons inner join  Vehicle on person.vehicleid = vehicleid inner join on person where pesonId = personId 
+
+            if (personList != null)
+            {
+                return personList;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
         //[HttpPost]
         //public Task CreatePerson([FromBody] int personId)
         //{

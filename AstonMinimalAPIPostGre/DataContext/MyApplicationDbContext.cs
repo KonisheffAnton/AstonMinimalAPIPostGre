@@ -21,7 +21,9 @@ namespace AstonMinimalAPIPostGre
             modelBuilder.Entity<Film>().ToTable("Film");
             modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
             modelBuilder.Entity<Person>().ToTable("Person");
-        }
+
+           // modelBuilder.Entity<Person>().HasData(new Person { ItemId = 1, Name = "Tom", Homeworld = "BubaF", Films = {1}, vehicle = "1", Url = "123123" });
+    }
     }
 }
 

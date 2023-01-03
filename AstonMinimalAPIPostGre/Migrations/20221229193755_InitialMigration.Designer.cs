@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AstonMinimalAPIPostGre.Migrations
 {
     [DbContext(typeof(MyApplicationDbContext))]
-    [Migration("20221224173313_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221229193755_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
