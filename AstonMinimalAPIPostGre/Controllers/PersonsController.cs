@@ -2,6 +2,7 @@
 using AstonMinimalAPIPostGre.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,16 +71,32 @@ namespace AstonMinimalAPIPostGre.Controllers
             }
 
         }
-        //[HttpPost]
-        //public Task CreatePerson([FromBody] int personId)
-        //{
+        [HttpPost]
+        public async Task<IActionResult> CreatePerson(Person person)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //}
-        //[HttpDelete]
-        //public Task DeletePersonById([FromRoute] int personId)
-        //{
+            _context.DbSetOfPersons.Add(person);
+            await _context.SaveChangesAsync();
+         //   _context.Entry(person).Reference(person => person.vehicle).Load();
 
-        //}
+            return Ok();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeletePersonById([FromRoute] int personId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
+            _context.DbSetOfPersons.Remove(person);
+            await _context.SaveChangesAsync();
+            return Ok(person);
+        }
 
     }
 }
