@@ -1,4 +1,5 @@
-﻿using AstonMinimalAPIPostGre.Models;
+﻿using AstonMinimalAPIPostGre.Dtos;
+using AstonMinimalAPIPostGre.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,23 @@ namespace AstonMinimalAPIPostGre.Controllers
         [HttpGet("{personId}")]
         public async Task<ActionResult<Person>> GetPersonById([FromRoute] int personId)
         {
-            var person = await _context.DbSetOfPersons.AsQueryable().Where(c => c.ItemId == personId).Include(c=>c.vehicle).FirstOrDefaultAsync();
-            
+            var person = await _context.DbSetOfPersons.AsQueryable().Include(b => b.Films).Select(c => new PersonDto()
+            {
+                ItemId = c.ItemId,
+
+                Name = c.Name,
+
+                Vehicle = c.vehicle.Name,
+
+                
+                
+                Url = c.Url 
+    }
+        ).SingleOrDefaultAsync(b => b.ItemId == personId);
+
+
+
+
             if (person != null)
             {
                 return person;
