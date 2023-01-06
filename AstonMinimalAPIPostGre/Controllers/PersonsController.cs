@@ -1,8 +1,9 @@
 ﻿using AstonMinimalAPIPostGre.Dtos;
 using AstonMinimalAPIPostGre.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,24 +22,19 @@ namespace AstonMinimalAPIPostGre.Controllers
 
 
         [HttpGet("{personId}")]
-        public async Task<ActionResult<Person>> GetPersonById([FromRoute] int personId)
+        public async Task<ActionResult<PersonDto>> GetPersonById([FromRoute] int personId)
         {
-            var person = await _context.DbSetOfPersons.AsQueryable().Include(b => b.Films).Select(c => new PersonDto()
-            {
-                ItemId = c.ItemId,
+            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).Select(personItem =>
+                new PersonDto()
+                {
+                    ItemId = personItem.ItemId,
+                    Name = personItem.Name,
+                    Homeworld = personItem.Homeworld,
+                    FilmNameWithPerson = personItem.Films.Select(film => film.Name).ToList(),
+                    vehicle = personItem.vehicle.Name
+                }).SingleOrDefaultAsync(c => c.ItemId == personId);
 
-                Name = c.Name,
-
-                Vehicle = c.vehicle.Name,
-
-                
-                
-                Url = c.Url 
-    }
-        ).SingleOrDefaultAsync(b => b.ItemId == personId);
-
-
-
+            //select * from persons inner join  Vehicle on person.vehicleid = vehicleid inner join on person where pesonId = personId 
 
             if (person != null)
             {
@@ -50,21 +46,57 @@ namespace AstonMinimalAPIPostGre.Controllers
             }
 
         }
-        //[HttpGet]
-        //public Task GetPersonList()
-        //{
+        [HttpGet]
+        public async Task<ActionResult<ICollection<PersonDto>>> GetPersonList()
+        {
+            var personList = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).Select(personItem =>
+                new PersonDto()
+                {
+                    ItemId = personItem.ItemId,
+                    Name = personItem.Name,
+                    Homeworld = personItem.Homeworld,
+                    FilmNameWithPerson = personItem.Films.Select(film => film.Name).ToList(),
+                    vehicle = personItem.vehicle.Name
+                }).ToListAsync();
 
-        //}
-        //[HttpPost]
-        //public Task CreatePerson([FromBody] int personId)
-        //{
+            //select * from persons inner join  Vehicle on person.vehicleid = vehicleid inner join on person where pesonId = personId 
 
-        //}
-        //[HttpDelete]
-        //public Task DeletePersonById([FromRoute] int personId)
-        //{
+            if (personList != null)
+            {
+                return personList;
+            }
+            else
+            {
+                return NotFound();
+            }
 
-        //}
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreatePerson(Person person)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.DbSetOfPersons.Add(person);
+            await _context.SaveChangesAsync();
+         //   _context.Entry(person).Reference(person => person.vehicle).Load();
+
+            return Ok();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeletePersonById([FromRoute] int personId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
+            _context.DbSetOfPersons.Remove(person);
+            await _context.SaveChangesAsync();
+            return Ok(person);
+        }
 
     }
 }
