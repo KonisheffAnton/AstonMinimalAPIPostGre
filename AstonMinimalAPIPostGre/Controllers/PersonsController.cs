@@ -72,31 +72,53 @@ namespace AstonMinimalAPIPostGre.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePerson(Person person)
+        public async Task<IActionResult> CreatePerson(Person personCreate)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+          
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-            _context.DbSetOfPersons.Add(person);
-            await _context.SaveChangesAsync();
-         //   _context.Entry(person).Reference(person => person.vehicle).Load();
+                _context.DbSetOfPersons.Add(personCreate);
+                await _context.SaveChangesAsync();
 
             return Ok();
         }
-        [HttpDelete]
+        [HttpDelete("{personId}")]
         public async Task<IActionResult> DeletePersonById([FromRoute] int personId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
-            _context.DbSetOfPersons.Remove(person);
+            var personDelete = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
+            _context.DbSetOfPersons.Remove(personDelete);
             await _context.SaveChangesAsync();
-            return Ok(person);
+            return Ok(personDelete);
         }
+
+        //[HttpPost]       
+        //public async Task<IActionResult> EditPerson(int? personId)
+        //{
+        //    if (personId == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var personToUpdate = await _context.DbSetOfPersons.AsQueryable().FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
+            
+        //        try
+        //        {
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //        catch (DbUpdateException  )
+        //        {
+                   
+        //        }
+        //    return Ok(personToUpdate);
+        //}
 
     }
 }
