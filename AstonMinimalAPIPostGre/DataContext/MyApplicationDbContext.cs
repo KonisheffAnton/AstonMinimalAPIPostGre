@@ -1,7 +1,5 @@
 ﻿using AstonMinimalAPIPostGre.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace AstonMinimalAPIPostGre
 {
@@ -22,8 +20,8 @@ namespace AstonMinimalAPIPostGre
             modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
             modelBuilder.Entity<Person>().ToTable("Person");
 
-           // modelBuilder.Entity<Person>().HasData(new Person { ItemId = 1, Name = "Tom", Homeworld = "BubaF", Films = {1}, vehicle = "1", Url = "123123" });
-    }
+            // modelBuilder.Entity<Person>().HasData(new Person { ItemId = 1, Name = "Tom", Homeworld = "BubaF", Films = {1}, vehicle = "1", Url = "123123" });
+        }
     }
 }
 

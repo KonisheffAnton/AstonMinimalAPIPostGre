@@ -1,6 +1,4 @@
-﻿using AstonMinimalAPIPostGre.Models;
-using System.Collections.Generic;
-using System.Security.Policy;
+﻿using System.Collections.Generic;
 
 namespace AstonMinimalAPIPostGre.Dtos
 {
@@ -11,6 +9,6 @@ namespace AstonMinimalAPIPostGre.Dtos
         public string Homeworld { get; set; }
         public ICollection<int> FilmIds { get; set; }
         public VehicleDto vehicle { get; set; }
-        public string Url { get; set; } 
+        public string Url { get; set; }
     }
 }
