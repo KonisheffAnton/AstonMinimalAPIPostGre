@@ -2,7 +2,6 @@
 using AstonMinimalAPIPostGre.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,31 +71,52 @@ namespace AstonMinimalAPIPostGre.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> CreatePerson(Person person)
+        public async Task<IActionResult> CreatePerson(PersonCreateDto personCreate)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.DbSetOfPersons.Add(person);
+            var FilmList = await _context.DbSetOfFilms.AsQueryable().Where(DbSetOfFilmsItem => personCreate.FilmIds.Contains(DbSetOfFilmsItem.FilmId)).ToListAsync();
+            var vehicle = await _context.DbSetOfVehicles.AsQueryable().FirstOrDefaultAsync(DbSetOfVehiclesItem => DbSetOfVehiclesItem.VehicleId == personCreate.vehicle.VehicleId);
+            var NewPerson = new Person(personCreate.ItemId, personCreate.Name, personCreate.Homeworld, FilmList, vehicle, personCreate.Url);
+            _context.DbSetOfPersons.Add(NewPerson);
             await _context.SaveChangesAsync();
-         //   _context.Entry(person).Reference(person => person.vehicle).Load();
-
             return Ok();
+
         }
-        [HttpDelete]
+        [HttpDelete("{personId}")]
         public async Task<IActionResult> DeletePersonById([FromRoute] int personId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var person = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
-            _context.DbSetOfPersons.Remove(person);
+            var personDelete = await _context.DbSetOfPersons.AsQueryable().Include(personItem => personItem.vehicle).Include(personItem => personItem.Films).FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
+            _context.DbSetOfPersons.Remove(personDelete);
             await _context.SaveChangesAsync();
-            return Ok(person);
+            return Ok(personDelete);
         }
+
+        //[HttpPut("{personId}")]
+        //public async Task<IActionResult> EditPerson(int personId, PersonDto personToUppdate)
+        //{
+
+        //  //  var personToUpdate = await _context.DbSetOfPersons.AsQueryable();
+
+        //    try
+        //    {
+        //        _context.Update(personToUppdate);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+
+        //    }
+        //    return Ok(personToUpdate);
+        //}
 
     }
 }

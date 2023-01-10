@@ -8,8 +8,8 @@ namespace AstonMinimalAPIPostGre.Models
         [Key]
         public int FilmId { get; set; }
         public string Name { get; set; }
-        public  ICollection<Person> Person { get; set; }
-        public  ICollection<Vehicle> Vehicles { get; set; }
+        public ICollection<Person> Person { get; set; }
+        public ICollection<Vehicle> Vehicles { get; set; }
         public string Url { get; set; }
     }
 }
