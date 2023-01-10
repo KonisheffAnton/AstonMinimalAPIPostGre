@@ -80,8 +80,8 @@ namespace AstonMinimalAPIPostGre.Controllers
             }
 
             var FilmList = await _context.DbSetOfFilms.AsQueryable().Where(DbSetOfFilmsItem => personCreate.FilmIds.Contains(DbSetOfFilmsItem.FilmId)).ToListAsync();
-            var vehicle = await _context.DbSetOfVehicles.AsQueryable().FirstOrDefaultAsync(DbSetOfVehiclesItem => DbSetOfVehiclesItem.VehicleId == personCreate.vehicle.VehicleId);
-            var NewPerson = new Person(personCreate.ItemId, personCreate.Name, personCreate.Homeworld, FilmList, vehicle, personCreate.Url);
+            var vehicleId = await _context.DbSetOfVehicles.AsQueryable().FirstOrDefaultAsync(DbSetOfVehiclesItem => DbSetOfVehiclesItem.VehicleId == personCreate.vehicleId);
+            var NewPerson = new Person(personCreate.ItemId, personCreate.Name, personCreate.Homeworld, FilmList, vehicleId, personCreate.Url);
             _context.DbSetOfPersons.Add(NewPerson);
             await _context.SaveChangesAsync();
             return Ok();

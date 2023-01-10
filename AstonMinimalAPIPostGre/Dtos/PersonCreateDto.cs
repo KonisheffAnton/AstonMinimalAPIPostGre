@@ -8,7 +8,7 @@ namespace AstonMinimalAPIPostGre.Dtos
         public string Name { get; set; }
         public string Homeworld { get; set; }
         public ICollection<int> FilmIds { get; set; }
-        public VehicleDto vehicle { get; set; }
+        public int vehicleId { get; set; }
         public string Url { get; set; }
     }
 }
