@@ -108,26 +108,23 @@ namespace AstonMinimalAPIPostGre.Controllers
             {
                 return BadRequest(ModelState);
             }
-   
 
+            var OldPerson = await _context.DbSetOfPersons.AsQueryable().FirstOrDefaultAsync(personItem => personItem.ItemId == personId);
             var FilmList = await _context.DbSetOfFilms.AsQueryable().Where(DbSetOfFilmsItem => personToUpdate.FilmIds.Contains(DbSetOfFilmsItem.FilmId)).ToListAsync();
-            var vehicleId = await _context.DbSetOfVehicles.AsQueryable().FirstOrDefaultAsync(DbSetOfVehiclesItem => DbSetOfVehiclesItem.VehicleId == personToUpdate.vehicleId);
-           
-            var NewPerson = new Person(personToUpdate.ItemId, personToUpdate.Name, personToUpdate.Homeworld, FilmList, vehicleId, personToUpdate.Url);
-            _context.DbSetOfPersons.Add(NewPerson);
+            var vehicleById = await _context.DbSetOfVehicles.AsQueryable().FirstOrDefaultAsync(DbSetOfVehiclesItem => DbSetOfVehiclesItem.VehicleId == personToUpdate.vehicleId);
+
+            OldPerson.ItemId = personToUpdate.ItemId;
+            OldPerson.Name = personToUpdate.Name;
+            OldPerson.Homeworld = personToUpdate.Homeworld;
+            OldPerson.Films = FilmList;
+            OldPerson.vehicle = vehicleById;
+
+ 
+            _context.DbSetOfPersons.Update(OldPerson);
             await _context.SaveChangesAsync();
             return Ok();
 
-            try
-            {
-                _context.Update(personToUpdate);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-
-            }
-            return Ok(personToUpdate);
+          
         }
 
     }

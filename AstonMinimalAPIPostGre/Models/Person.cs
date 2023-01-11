@@ -27,6 +27,7 @@ namespace AstonMinimalAPIPostGre.Models
 
         private Person()
         {
+
         }
 
 
