@@ -1,3 +1,7 @@
+using AstonMinimalAPIPostGre.Dtos;
+using AstonMinimalAPIPostGre.Dtos.Validations;
+using AstonMinimalAPIPostGre.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +27,7 @@ namespace AstonMinimalAPIPostGre
             services.AddDbContext<MyApplicationDbContext>(options =>
            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-
+            services.AddScoped<IValidator<PersonDto>, PersonCreateDtoValidation>();
             services.AddSwaggerGen();
         }
 

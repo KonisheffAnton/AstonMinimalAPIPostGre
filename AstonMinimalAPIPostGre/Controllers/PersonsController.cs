@@ -1,10 +1,14 @@
 ﻿using AstonMinimalAPIPostGre.Dtos;
 using AstonMinimalAPIPostGre.Models;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace AstonMinimalAPIPostGre.Controllers
 {
@@ -12,11 +16,12 @@ namespace AstonMinimalAPIPostGre.Controllers
     [ApiController]
     public class PersonsController : ControllerBase
     {
-        MyApplicationDbContext _context;
-
-        public PersonsController(MyApplicationDbContext context)
+        private MyApplicationDbContext _context;
+        private IValidator<PersonCreateDto> _validator;
+        public PersonsController(MyApplicationDbContext context, IValidator<PersonCreateDto> validator)
         {
             _context = context;
+            _validator = validator;
         }
 
 
@@ -73,10 +78,18 @@ namespace AstonMinimalAPIPostGre.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePerson(PersonCreateDto personCreate)
         {
+            ValidationResult ValidationResultPersonCreateDto = await _validator.ValidateAsync(personCreate);
 
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ValidationResultPersonCreateDto.IsValid)
+                {
+                    throw new Exception("Проверка валидатора PersonCreateDto не пройдена");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
             }
 
             var FilmList = await _context.DbSetOfFilms.AsQueryable().Where(DbSetOfFilmsItem => personCreate.FilmIds.Contains(DbSetOfFilmsItem.FilmId)).ToListAsync();
@@ -119,12 +132,12 @@ namespace AstonMinimalAPIPostGre.Controllers
             OldPerson.Films = FilmList;
             OldPerson.vehicle = vehicleById;
 
- 
+
             _context.DbSetOfPersons.Update(OldPerson);
             await _context.SaveChangesAsync();
             return Ok();
 
-          
+
         }
 
     }
